@@ -1,19 +1,53 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-  </body>
+</head>
+<body>
 
-  <script>
-    // You can also require other files to run in this process
-    require('./renderer.js')
-  </script>
+<label for="phone-number">phone number: </label><input id="phone-number" type="tel"/>
+<button id="phone-call-request-button">Request Phone Call</button>
+
+
+</body>
+<script>
+  var $ = require('./jquery-3.2.1.min')
+</script>
+
+<script>
+  // You can also require other files to run in this process
+  require('./renderer.js');
+
+  const notifier = require('electron-notifications')
+
+
+  // Used to format phone number
+  var phoneNumberElem = $('#phone-number');
+  phoneNumberElem.on('input', function () {
+    var number = phoneNumberElem.val().replace(/[^\d]/g, '');
+    if (number === "1") number = "";
+    number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+    var limited = number.substring(0, 14);
+    phoneNumberElem.val(limited);
+  })
+
+
+  $("#phone-call-request-button").click(function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: "https://webtask.it.auth0.com/api/run/wt-ebb35510f33e993c4c28f70975f69ba0-0/tag/request/" + phoneNumberElem.val().replace(/[^\d]/g, ''),
+      success: function (result) {
+        new Notification('Tag Phone Call Requested Successsfully', {
+          body: 'You should expect a phone call shortly'
+        })
+        phoneNumberElem.val("")
+      },
+      error: function (result) {
+        new Notification('There was an error')
+      }
+    });
+  });
+</script>
 </html>
