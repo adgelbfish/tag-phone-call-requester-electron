@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Hello World!</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
-<label for="phone-number">phone number: </label><input id="phone-number" type="tel"/>
-<button id="phone-call-request-button">Request Phone Call</button>
+
+<div id="phone-number-label-div"><label for="phone-number">phone number: </label></div>
+
+<div id="phone-number-input-div"><input id="phone-number" type="tel"/></div>
+
+<div id="phone-call-request-button-div"><button id="phone-call-request-button">Request Phone Call</button></div>
 
 
 </body>
@@ -17,31 +22,29 @@
 
 <script>
   // You can also require other files to run in this process
-  require('./renderer.js');
-
-  const notifier = require('electron-notifications')
 
 
   // Used to format phone number
-  var phoneNumberElem = $('#phone-number');
+  let phoneNumberElem = $('#phone-number');
   phoneNumberElem.on('input', function () {
-    var number = phoneNumberElem.val().replace(/[^\d]/g, '');
+    let number = phoneNumberElem.val().replace(/[^\d]/g, '');
     if (number === "1") number = "";
     number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
-    var limited = number.substring(0, 14);
+    let limited = number.substring(0, 14);
     phoneNumberElem.val(limited);
-  })
+  });
 
 
   $("#phone-call-request-button").click(function (e) {
     e.preventDefault();
+    console.log("clicked")
     $.ajax({
       type: "POST",
       url: "https://webtask.it.auth0.com/api/run/wt-ebb35510f33e993c4c28f70975f69ba0-0/tag/request/" + phoneNumberElem.val().replace(/[^\d]/g, ''),
       success: function (result) {
         new Notification('Tag Phone Call Requested Successsfully', {
           body: 'You should expect a phone call shortly'
-        })
+        });
         phoneNumberElem.val("")
       },
       error: function (result) {
@@ -49,5 +52,7 @@
       }
     });
   });
+
+  require('./renderer.js');
 </script>
 </html>

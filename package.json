@@ -1,25 +1,35 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
+  "name": "tag-phone-call-requester",
+  "productName": "TAG phone call requester",
+  "version": "1.0.1",
   "description": "A minimal Electron application",
   "main": "main.js",
-  "scripts": {
-    "start": "electron ."
+  "appId": "com.entatix.tagphonecallrequesterelectron",
+  "repository": "git+https://github.com/adgelbfish/tag-phone-call-requester-electron.git",
+  "win": {
+    "publish": [
+      "github"
+    ],
+    "iconUrl": "http://s000.tinyupload.com/download.php?file_id=67903611603976466933&t=6790361160397646693377478"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "GitHub",
+  "scripts": {
+    "start": "electron .",
+    "pack": "build --dir",
+    "dist": "build",
+    "pub": "build --win --publish",
+    "prerelease": "build --win --prerelease",
+    "draft": "build --win --draft",
+    "postinstall": "install-app-deps"
+  },
+  "author": "Avraham David Gelbfish",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "~1.6.2"
+    "electron": "~1.6.2",
+    "electron-builder": "^17.1.2"
   },
   "dependencies": {
-    "electron-notifications": "^1.0.0"
+    "electron-log": "^2.2.4",
+    "electron-notifications": "^1.0.0",
+    "electron-updater": "^1.14.4"
   }
 }
