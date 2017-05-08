@@ -1,7 +1,7 @@
 {
   "name": "tag-phone-call-requester",
   "productName": "TAG phone call requester",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A minimal Electron application",
   "main": "main.js",
   "appId": "com.entatix.tagphonecallrequesterelectron",
@@ -30,6 +30,8 @@
   "dependencies": {
     "electron-log": "^2.2.4",
     "electron-notifications": "^1.0.0",
-    "electron-updater": "^1.14.4"
+    "electron-updater": "^1.14.4",
+    "jquery": "^3.2.1",
+    "moment": "^2.18.1"
   }
 }

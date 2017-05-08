@@ -1,28 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html class="light-blue">
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Tag Phone Call Requester</title>
+    <link rel="stylesheet" href="./materialize/css/materialize.min.css">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
+<div class="container center-align">
+    <div class="card-panel center-align ">
+        <img class="responsive-img" src="./official-color.png">
+    </div>
+    <div class="card-panel center-align z-depth-2">
+        <label for="phone-number">phone number: </label>
 
-<div id="phone-number-label-div"><label for="phone-number">phone number: </label></div>
+        <input class="center-align flow-text" id="phone-number" type="tel"/>
 
-<div id="phone-number-input-div"><input id="phone-number" type="tel"/></div>
+        <a class="waves-effect truncate waves-light btn blue darken-3 disabled" id="phone-call-request-button">Request
+            Phone Call</a>
+    </div>
 
-<div id="phone-call-request-button-div"><button id="phone-call-request-button">Request Phone Call</button></div>
+    <div id="request-status-card" class="card hide">
+        <div id="request-status-card-content" class="card-content">
 
+        </div>
+        <div class="card-action">
+            <a href="https://taglondon.org/files/teamviewer/v11/TeamViewer_Setup.exe" class="waves-effect white-text waves-light blue darken-3 btn-flat">Download Teamviewer</a>
+        </div>
+    </div>
+
+    <!-- Modal Trigger -->
+    <button data-target="modal1" id="modal-button"
+            class="center-align waves-effect truncate waves-light btn-large blue darken-3">Info
+    </button>
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4 class="flow-text"><strong>TAG Information:</strong></h4>
+            <p class="flow-text">
+                PHONE: 732-730-1TAG (1824)
+            </p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-light btn-flat">Ok</a>
+        </div>
+    </div>
+
+
+</div>
 
 </body>
 <script>
-  var $ = require('./jquery-3.2.1.min')
+  let $ = require("jQuery")
+  const Hammer = require('./hammer.min.js')
 </script>
 
+<script src="./materialize/js/materialize.min.js"></script>
+
 <script>
+  let moment = require("moment");
+
   // You can also require other files to run in this process
 
+  let lastRequest = null;
+
+  setInterval(function () {
+    $('#request-status-card-content').html(lastRequest ? `<strong>Status:</strong> Phone call last requested ${lastRequest.fromNow()}.<br/>If the call is about your computer, please make sure that you have Teamviewer installed.` : '')
+  }, 500);
 
   // Used to format phone number
   let phoneNumberElem = $('#phone-number');
@@ -32,25 +78,37 @@
     number = number.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
     let limited = number.substring(0, 14);
     phoneNumberElem.val(limited);
+    let requestButton = $("#phone-call-request-button")
+    if (limited.length === 14) requestButton.removeClass("disabled");
+    else requestButton.addClass("disabled")
   });
 
 
   $("#phone-call-request-button").click(function (e) {
     e.preventDefault();
-    console.log("clicked")
+    if (phoneNumberElem.val().length !== 14) return
     $.ajax({
       type: "POST",
       url: "https://webtask.it.auth0.com/api/run/wt-ebb35510f33e993c4c28f70975f69ba0-0/tag/request/" + phoneNumberElem.val().replace(/[^\d]/g, ''),
       success: function (result) {
         new Notification('Tag Phone Call Requested Successsfully', {
-          body: 'You should expect a phone call shortly'
+          body: 'You should expect a phone call shortly, please make sure you have Teamviewer installed and ready'
         });
-        phoneNumberElem.val("")
+        phoneNumberElem.val("");
+        lastRequest = moment();
+        $("#request-status-card").removeClass("hide")
       },
       error: function (result) {
-        new Notification('There was an error')
+        new Notification('There was an error', {
+          body: 'the phone call request didn\'t work, try calling directly'
+        })
       }
     });
+  });
+
+  $(document).ready(function () {
+    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+    $('.modal').modal();
   });
 
   require('./renderer.js');

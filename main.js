@@ -53,13 +53,16 @@ if (process.platform === 'darwin') {
 // that updates are working.
 //-------------------------------------------------------------------
 let win;
-
+/*
 function sendStatusToWindow(text) {
   log.info(text);
   win.webContents.send('message', text);
 }
+*/
 function createDefaultWindow() {
-  win = new BrowserWindow();
+  win = new BrowserWindow({
+    useContentSize: true
+  });
   win.webContents.openDevTools();
   win.on('closed', () => {
     win = null;
@@ -69,7 +72,7 @@ function createDefaultWindow() {
 }
 
 
-
+/*
 autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
 })
@@ -91,6 +94,7 @@ sendStatusToWindow(log_message);
 autoUpdater.on('update-downloaded', (ev, info) => {
   sendStatusToWindow('Update downloaded; will install in 5 seconds');
 });
+*/
 app.on('ready', function() {
   // Create the Menu
   const menu = Menu.buildFromTemplate(template);
@@ -123,6 +127,7 @@ app.on('window-all-closed', () => {
 // })
 // autoUpdater.on('download-progress', (ev, progressObj) => {
 // })
+/*
 autoUpdater.on('update-downloaded', (ev, info) => {
   // Wait 5 seconds, then quit and install
   // In your application, you don't need to wait 5 seconds.
@@ -131,10 +136,10 @@ autoUpdater.on('update-downloaded', (ev, info) => {
     autoUpdater.quitAndInstall();
   }, 5000)
 })
-
+*/
 app.on('ready', function()  {
   try {
-    autoUpdater.checkForUpdates();
+    // autoUpdater.checkForUpdates();
   } catch (err) {
     console.log(err)
   }
